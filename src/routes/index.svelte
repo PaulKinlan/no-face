@@ -53,36 +53,12 @@
   });
 
   async function detectText(file: File): Promise<Rect[]> {
-    // const faceDetector = new MediaPipe.FaceDetection({
-    //   locateFile: (file, prefix) => {
-    //     console.log(file, prefix);
-    //     return `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/${file}`;
-    //     //return `${location.href}/mediapipe/${file}`;
-    //   }
-    // });
-
-    // faceDetector.onResults((results: MediaPipe.Results) => {
-    //   console.log(results);
-    // });
-
-    // faceDetector.setOptions({
-    //   modelSelection: 0,
-    //   minDetectionConfidence: 0.5
-    // });
-
-    // await faceDetector.initialize();
-
     const img = await loadImage(file);
-
-    // await faceDetector.send({ image: img });
-
     const model = faceDetector.SupportedModels.MediaPipeFaceDetector;
 
     const detectorConfig = {
       runtime: 'mediapipe' // or 'tfjs'
     };
-
-    //const detector = await faceDetector.createDetector(model, detectorConfig);
 
     let detector = await faceDetector.createDetector(model, {
       runtime: 'mediapipe',
@@ -106,8 +82,6 @@
           fill: true
         });
       });
-
-      console.log(faces);
     } catch (error) {
       detector.dispose();
       detector = null;
