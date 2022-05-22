@@ -17,14 +17,12 @@ const config = {
     target: '#svelte',
     vite: defineConfig({
       optimizeDeps: {
-        esbuildOptions: {
-
-        },
-        exclude: ["@tensorflow-models/face-detection", "@tensorflow-models/face-detection.js"],
+        esbuildOptions: {},
+        exclude: ['@tensorflow-models/face-detection', '@tensorflow-models/face-detection.js']
       },
       esbuild: {
-        exclude: ["@tensorflow-models/face-detection"],
-        format: "esm",
+        exclude: ['@tensorflow-models/face-detection'],
+        format: 'esm',
         minify: false
       }
     })

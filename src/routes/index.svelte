@@ -48,7 +48,7 @@
   });
 
   async function detectFace(file: File): Promise<Rect[]> {
-    const faceDetector = await import('/mediapipe/face_detection.js'+'');
+    const faceDetector = await import('/mediapipe/face_detection.js' + '');
 
     const img = await loadImage(file);
     const model = faceDetector.SupportedModels.MediaPipeFaceDetector;
