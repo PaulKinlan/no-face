@@ -17,6 +17,10 @@
   const temptRect = new Rect();
   const pixels = 100; // pixeleration density
 
+  export function getImage() {
+    return imgFile;
+  }
+
   export function init(img, rects: Rect[] = []) {
     imgFile = img;
     refresh = true;

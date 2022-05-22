@@ -1,5 +1,5 @@
 {
-  "name": "mosaic-it",
+  "name": "no-face",
   "version": "0.0.1",
   "scripts": {
     "dev": "svelte-kit dev",
@@ -16,6 +16,7 @@
     "@sveltejs/adapter-auto": "next",
     "@sveltejs/adapter-static": "next",
     "@sveltejs/kit": "next",
+    "@tensorflow-models/face-detection": "latest",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
     "eslint": "^7.32.0",
@@ -36,7 +37,8 @@
   "dependencies": {
     "@material/mwc-fab": "^0.25.3",
     "@material/mwc-icon": "^0.25.3",
-    "pinch-zoom-element": "^1.1.1",
-    "tesseract.js": "^2.1.5"
+    "@mediapipe/face_detection": "^0.4.1646425229",
+    "@tensorflow/tfjs-backend-wasm": "^3.18.0",
+    "pinch-zoom-element": "^1.1.1"
   }
 }

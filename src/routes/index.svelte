@@ -4,18 +4,37 @@
   import Controls from '../components/Controls.svelte';
   import { RingLoader } from 'svelte-loading-spinners';
   import { Rect } from '../classes/rect';
-  import { createWorker } from 'tesseract.js';
+  //import * as MediaPipe from '@mediapipe/face_detection';
+  tfjsWasm.setWasmPaths(`/wasm-dist/`);
+  import * as tfjsWasm from '@tensorflow/tfjs-backend-wasm';
+
+  import * as faceDetector from '@tensorflow-models/face-detection';
 
   let droppedFile: HTMLImageElement;
   let fileUrl: string;
   let file: File;
   let isLoadingMode: boolean = false;
   let isFileDropMode: boolean = true;
-  let detectedWords: Rect[] = [];
+  let detectedFaces: Rect[] = [];
   let mask: string;
-  const worker = createWorker();
 
   let canvasCmp;
+
+  let loadImage = function (file: File): Promise<HTMLImageElement> {
+    return new Promise((accept, reject) => {
+      let img: HTMLImageElement = document.createElement('img');
+      const url = URL.createObjectURL(file);
+      img.src = url;
+      img.onload = () => {
+        //URL.revokeObjectURL(url);
+        accept(img);
+      };
+      img.onerror = () => {
+        // URL.revokeObjectURL(url);
+        reject(img);
+      };
+    });
+  };
 
   onMount(async () => {
     // https://kit.svelte.dev/faq#:~:text=How%20do%20I%20use%20a%20client%2Dside%20only%20library%20that%20depends%20on%20document%20or%20window%3F
@@ -34,37 +53,67 @@
   });
 
   async function detectText(file: File): Promise<Rect[]> {
-    await worker.load();
-    await worker.loadLanguage('eng');
-    await worker.initialize('eng');
-    const { data } = await worker.recognize(file);
-    await worker.terminate();
+    // const faceDetector = new MediaPipe.FaceDetection({
+    //   locateFile: (file, prefix) => {
+    //     console.log(file, prefix);
+    //     return `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/${file}`;
+    //     //return `${location.href}/mediapipe/${file}`;
+    //   }
+    // });
 
-    const words: Tesseract.Word[] = data.words.filter((word) => {
-      // The words must be at least 3 characters long.
-      return word.text.length > 2;
+    // faceDetector.onResults((results: MediaPipe.Results) => {
+    //   console.log(results);
+    // });
+
+    // faceDetector.setOptions({
+    //   modelSelection: 0,
+    //   minDetectionConfidence: 0.5
+    // });
+
+    // await faceDetector.initialize();
+
+    const img = await loadImage(file);
+
+    // await faceDetector.send({ image: img });
+
+    const model = faceDetector.SupportedModels.MediaPipeFaceDetector;
+
+    const detectorConfig = {
+      runtime: 'mediapipe' // or 'tfjs'
+    };
+
+    //const detector = await faceDetector.createDetector(model, detectorConfig);
+
+    let detector = await faceDetector.createDetector(model, {
+      runtime: 'mediapipe',
+      modelType: 'full',
+      maxFaces: 5,
+      solutionPath: `/mediapipe/`
     });
-    const rects: Rect[] = words.map((word) => {
-      const show = word.confidence > 70.0;
-      const text = word.text.trim();
-      let sensitive = false;
-      // if isSentiveData then fill = true
-      if (
-        /^[0-9-]+$/.test(text) ||
-        /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/.test(text)
-      ) {
-        sensitive = true;
-      }
-      const { x0: x, y0: y, x1, y1 } = word.bbox;
-      const w = x1 - x;
-      const h = y1 - y;
-      if (sensitive) {
-        console.log(`"${text}"`, `considered sensitive`);
-      } else {
-        console.log(`"${text}"`);
-      }
-      return new Rect({ x, y, w, h, text, fill: sensitive }, sensitive);
-    });
+
+    let rects: Rect[] = [];
+
+    try {
+      let faces = await detector.estimateFaces(img, { flipHorizontal: false });
+
+      rects = faces.map((result) => {
+        return new Rect({
+          x: result.box.xMin,
+          y: result.box.yMin,
+          w: result.box.width,
+          h: result.box.height,
+          text: 'tst',
+          fill: true
+        });
+      });
+
+      console.log(faces);
+    } catch (error) {
+      detector.dispose();
+      detector = null;
+      console.log(error);
+    }
+
     return rects;
   }
 
@@ -76,7 +125,7 @@
 
     isLoadingMode = true;
     isFileDropMode = false;
-    detectedWords = await detectText(file);
+    detectedFaces = await detectText(file);
 
     fileUrl = URL.createObjectURL(file);
     isLoadingMode = false;
@@ -84,14 +133,14 @@
 
   function drawImage() {
     const rects: Rect[] = [];
-    canvasCmp.init(droppedFile, detectedWords);
+    canvasCmp.init(droppedFile, detectedFaces);
   }
 
   function download() {
     return canvasCmp.render().then((blob) => new File([blob], 'final.png', { type: 'image/png' }));
   }
 
-  function toggleMask(event) {
+  function toggleMask() {
     canvasCmp.toggleMask();
   }
 </script>
@@ -129,7 +178,13 @@
     {#if fileUrl != undefined}
       <!-- disable resize -->
       <!-- style="max-width:100%;max-height:90vh;" -->
-      <img bind:this={droppedFile} alt="" src={fileUrl} on:load={drawImage} />
+      <img
+        bind:this={droppedFile}
+        alt=""
+        src={fileUrl}
+        on:load={drawImage}
+        id="droppedImageElement"
+      />
     {/if}
   </Canvas>
 </div>
