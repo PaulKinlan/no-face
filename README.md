@@ -1,8 +1,8 @@
-![Vercel](https://therealsujitk-vercel-badge.vercel.app/?app=mosaic-it)
+![Vercel](https://therealsujitk-vercel-badge.vercel.app/?app=no-face)
 
 # Where?
 
-The app will be auto deploy to https://mosaic-it.vercel.app when you push changes to main.
+The app will be auto deploy to https://no-face.vercel.app when you push changes to main.
 
 # create-svelte
 
@@ -42,3 +42,7 @@ npm run build
 ```
 
 > You can preview the built app with `npm run preview`, regardless of whether you installed an adapter. This should _not_ be used to serve your app in production.
+
+## Oringal Code
+
+The original source code was taken from a hackathon with Jecelyn Yeen, Eiji Kitamura and Paul Kinlan. And changed to focus on hiding faces.
