@@ -26,11 +26,11 @@
       const url = URL.createObjectURL(file);
       img.src = url;
       img.onload = () => {
-        //URL.revokeObjectURL(url);
+        URL.revokeObjectURL(url);
         accept(img);
       };
       img.onerror = () => {
-        // URL.revokeObjectURL(url);
+        URL.revokeObjectURL(url);
         reject(img);
       };
     });
