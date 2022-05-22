@@ -13,7 +13,6 @@
     "prepare": "husky install"
   },
   "devDependencies": {
-    "@sveltejs/adapter-auto": "next",
     "@sveltejs/adapter-static": "next",
     "@sveltejs/kit": "next",
     "@tensorflow-models/face-detection": "latest",
@@ -38,6 +37,8 @@
     "@material/mwc-fab": "^0.25.3",
     "@material/mwc-icon": "^0.25.3",
     "@mediapipe/face_detection": "^0.4.1646425229",
+    "@rollup/plugin-commonjs": "^22.0.0",
+    "@rollup/plugin-node-resolve": "^13.3.0",
     "@tensorflow/tfjs-backend-wasm": "^3.18.0",
     "pinch-zoom-element": "^1.1.1"
   }

@@ -4,11 +4,6 @@
   import Controls from '../components/Controls.svelte';
   import { RingLoader } from 'svelte-loading-spinners';
   import { Rect } from '../classes/rect';
-  //import * as MediaPipe from '@mediapipe/face_detection';
-  tfjsWasm.setWasmPaths(`/wasm-dist/`);
-  import * as tfjsWasm from '@tensorflow/tfjs-backend-wasm';
-
-  import * as faceDetector from '@tensorflow-models/face-detection';
 
   let droppedFile: HTMLImageElement;
   let fileUrl: string;
@@ -52,7 +47,9 @@
     navigator.serviceWorker.controller?.postMessage('share-ready');
   });
 
-  async function detectText(file: File): Promise<Rect[]> {
+  async function detectFace(file: File): Promise<Rect[]> {
+    const faceDetector = await import('/mediapipe/face_detection.js'+'');
+
     const img = await loadImage(file);
     const model = faceDetector.SupportedModels.MediaPipeFaceDetector;
 
@@ -99,7 +96,7 @@
 
     isLoadingMode = true;
     isFileDropMode = false;
-    detectedFaces = await detectText(file);
+    detectedFaces = await detectFace(file);
 
     fileUrl = URL.createObjectURL(file);
     isLoadingMode = false;
