@@ -1,6 +1,6 @@
 {
-  "short_name": "Mosaic It",
-  "name": "Mosaic It",
+  "short_name": "No Face It",
+  "name": "No Face It",
   "start_url": "/",
   "icons": [
     {
@@ -38,5 +38,5 @@
   "display": "standalone",
   "scope": "/",
   "theme_color": "#4CAF50",
-  "description": "Quickly blur out sensitive information in an image"
+  "description": "Quickly hide peoples faces in an image"
 }
