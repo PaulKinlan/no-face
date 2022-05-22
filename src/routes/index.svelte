@@ -173,7 +173,7 @@
       on:change={(e) => handleFileDrop(e.target)}
     />
     <label for="file-picker" class="file-picker__label">
-      <h1>Drop or select an image to start auto mosaic.</h1>
+      <h1>Drop or select an image to start hiding those faces.</h1>
       <svg viewBox="0 0 24 24" class="file-picker__icon">
         <path
           d="M19 7v3h-2V7h-3V5h3V2h2v3h3v2h-3zm-3 4V8h-3V5H5a2 2 0 00-2 2v12c0 1.1.9 2 2 2h12a2 2 0 002-2v-8h-3zM5 19l3-4 2 3 3-4 4 5H5z"
